@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "891073990454",
+    "project_id": "catch-85c00",
+    "storage_bucket": "catch-85c00.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891073990454:android:72c330775bab09b3fb2d97",
+        "android_client_info": {
+          "package_name": "com.catchmobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891073990454-99ch767ni73e8g563ssbkjbmmkeg2tdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaQuU5PsL59Lxbs3JpWEcGKwaIDpvpH_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891073990454-99ch767ni73e8g563ssbkjbmmkeg2tdn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891073990454:android:5160b14a58fbee89fb2d97",
+        "android_client_info": {
+          "package_name": "com.catchon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891073990454-99ch767ni73e8g563ssbkjbmmkeg2tdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaQuU5PsL59Lxbs3JpWEcGKwaIDpvpH_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891073990454-99ch767ni73e8g563ssbkjbmmkeg2tdn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
