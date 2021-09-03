@@ -18,6 +18,9 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import SQLite from 'react-native-sqlite-storage';
+
+SQLite.enablePromise(true);
 
 import {
   Colors,
