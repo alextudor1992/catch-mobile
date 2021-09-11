@@ -1,3 +1,8 @@
+import { configure } from "mobx";
+
+configure({
+  useProxies: "ifavailable"
+})
 
 export default {
   api: {

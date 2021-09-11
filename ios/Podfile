@@ -23,6 +23,8 @@ target 'catchMobileApp' do
 
 
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'catchMobileAppTests' do
     inherit! :complete
     # Pods for testing

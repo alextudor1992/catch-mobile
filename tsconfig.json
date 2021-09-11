@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
@@ -25,11 +25,16 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "useDefineForClassFields": true,
     "strict": false,
     "baseUrl": "./src",
     "paths": {
+      "@api": ["./api/"],
       "@utils": ["./utils/"],
-      "@config": ["./config/"]
+      "@config": ["./config/"],
+      "@type": ["./type/"],
+      "@store": ["./store/"],
+      "@components": ["./components/"]
     }
   },
   "exclude": [
