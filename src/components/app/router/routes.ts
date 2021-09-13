@@ -1,7 +1,7 @@
-import React, { ClassicComponent, FunctionComponent } from "react";
-import {Text} from "react-native";
+import { ClassicComponent, FunctionComponent } from "react";
+import { Feed } from "../../feed";
 
-type PageRoutes = {[key in Route]: FunctionComponent<any> | ClassicComponent<any, any> };
+type PageRoutes = {[key in Route]: FunctionComponent<any> | ClassicComponent<any, any>};
 
 export enum Route {
   FEED = 'Feed',
@@ -18,10 +18,12 @@ export enum Route {
   NEW_PROFILE = 'New Profile',
   PROFILES = 'Profiles',
   PROFILE = 'Profile',
+
+  SEARCH = 'Search',
 }
 
 export const routes: PageRoutes = {
-  [Route.FEED]: () => <Text>This is the feed page</Text>,
+  [Route.FEED]: Feed,
 
   [Route.POST]: () => null,
   [Route.NEW_POST]: () => null,
@@ -35,4 +37,6 @@ export const routes: PageRoutes = {
   [Route.NEW_PROFILE]: () => null,
   [Route.PROFILES]: () => null,
   [Route.PROFILE]: () => null,
+
+  [Route.SEARCH]: () => null,
 };

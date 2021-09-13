@@ -1,34 +1,26 @@
-import { action, computed, observable } from "mobx";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { hydrate } from "../../store";
+import { action, computed } from "mobx";
+import { NavigationContainerRef } from "@react-navigation/native";
 
 export class NavigationStore {
-  @observable
-  protected navigator = useNavigation();
+  protected navigator?: NavigationContainerRef;
 
-  @observable
-  protected currentRoute = useRoute().name;
+  @action
+  setNavigator = (navigator: NavigationContainerRef) => {
+    this.navigator = navigator;
+  }
 
   @computed
   getCurrentPage = () => {
-    const { name } = useRoute();
-    return name;
+    const state = this.navigator?.getState();
+    return state?.routeNames[state?.index];
   }
 
   @action
-  changePage = (route: string, data: any) => {
-    this.navigator.navigate(route, data);
-  }
+  changePage = (route: string, data?: any) => this.navigator?.navigate(route, data);
 
   @action
-  changeToPreviousPage = () => {
-    this.navigator.goBack();
-  }
+  changeToPreviousPage = () => this.navigator?.goBack();
 
   @computed
-  canGoBackToPreviousPage = () => {
-    return this.navigator.canGoBack();
-  }
+  canGoBackToPreviousPage = () => this.navigator?.canGoBack();
 }
-
-export const getNavigationStore = async () => await hydrate('nav', new NavigationStore());

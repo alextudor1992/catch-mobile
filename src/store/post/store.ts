@@ -1,26 +1,23 @@
-import { action, observable } from "mobx";
+import { action, computed, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { Post } from "./post";
-import { hydrate } from "../../store";
-import { Account } from "../account";
+import { Store } from "../../store";
 
 export class PostStore {
 
-  constructor(protected account: Account) {}
+  constructor(protected store: Store) {}
 
-  @observable @persist('map', Post)
-  posts = observable.map<string, Post>({});
+  @observable @persist('list', Post)
+  posts = observable.array<Post>([]);
 
   @action
   setPost = (post: Post) => {
-    this.posts.set(post.postId, post);
+    this.posts.push(post);
   }
 
   @action
   removePost = (post: Post) => {
-    if (this.posts.has(post.postId)) {
-      this.posts.delete(post.postId);
-    }
+    this.posts.splice(this.posts.findIndex(({postId}) => post.postId === postId), 1);
   }
 
   @action
@@ -28,9 +25,14 @@ export class PostStore {
     post.dateUpdated = new Date();
   }
 
+  @computed
   getPost = (postId: string) => {
-    return this.posts.get(postId);
-  }
+    return this.posts[this.posts.findIndex((post) => post.postId === postId)];
+  };
 }
 
-export const getPostStore = async (account: Account) => await hydrate(`${account.currentProfile}_posts`, new PostStore(account));
+export function* posts(store: PostStore, count: number, offset: number) {
+  for (let i=offset; i<count; i++) {
+    yield store.posts[i];
+  }
+}

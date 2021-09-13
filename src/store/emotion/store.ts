@@ -3,12 +3,11 @@ import { persist } from "mobx-persist";
 import { Emotion } from "./emotion";
 import { EmotionType } from "../../type/engagement";
 import { Post } from "../post";
-import { hydrate } from "../../store";
-import { Account } from "../account";
+import { Store } from "../store";
 
 export class EmotionStore {
 
-  constructor(protected account: Account) {}
+  constructor(protected store: Store) {}
 
   @observable @persist('map', Emotion)
   emotions = observable.map<string, Emotion>({});
@@ -31,5 +30,3 @@ export class EmotionStore {
     return this.emotions.get(post.postId);
   }
 }
-
-export const getEmotionStore = async (account: Account) => await hydrate(`${account.currentProfile}_emotions`, new EmotionStore(account));

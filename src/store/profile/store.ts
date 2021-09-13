@@ -1,7 +1,6 @@
 import { action, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { Profile } from "./profile";
-import { hydrate } from "../../store";
 
 export class ProfileStore {
   @observable @persist('map', Profile)
@@ -21,5 +20,3 @@ export class ProfileStore {
     }
   }
 }
-
-export const getProfileStore = async () => await hydrate('profiles', new ProfileStore());

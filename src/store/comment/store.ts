@@ -3,12 +3,11 @@ import { persist } from "mobx-persist";
 import { Comment } from "./comment";
 import { Post } from "../post";
 import { v4 as uuid } from 'uuid';
-import { hydrate } from "../../store";
-import { Account } from "../account";
+import { Store } from "../store";
 
 export class CommentStore {
 
-  constructor(protected account: Account) {}
+  constructor(protected store: Store) {}
 
   @observable @persist('map', [Comment])
   comments = observable.map<string, Comment[]>({});
@@ -55,5 +54,3 @@ export class CommentStore {
     else this.comments.get(postId)?.push(comment);
   }
 }
-
-export const getCommentStore = async (account: Account) => await hydrate(`${account.currentProfile}_emotions`, new CommentStore(account));
