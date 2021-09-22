@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
-import { IdentityStatus } from "../../type/account";
+import { AccountType, IdentityStatus } from "../../type/account";
 
 export class AccountStore {
   @observable @persist
@@ -9,14 +9,14 @@ export class AccountStore {
   @observable @persist
   status: IdentityStatus = IdentityStatus.NOT_VERIFIED;
 
+  @observable @persist
+  type: AccountType = AccountType.PERSONAL;
+
   @observable @persist('list')
-  profiles: string[] = observable.array([]);
+  readonly profiles: string[] = observable.array([]);
 
   @observable @persist('map')
-  preferences: {[key: string]: any} = observable.map({});
-
-  @observable @persist
-  activeProfile: string = '';
+  readonly preferences: {[key: string]: any} = observable.map({});
 
   constructor() {
     makeObservable(this);

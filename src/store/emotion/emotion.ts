@@ -1,26 +1,28 @@
 import { makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { EmotionType } from "../../type/engagement";
+import { ContentEntity, DEFAULT_CONTENT_ENTITY, EntityType } from "../../type/entity";
 
 export class Emotion {
   @observable @persist
-  emotion: EmotionType;
+  emotionId: string = '';
+
+  @observable @persist('object')
+  readonly entity = observable.object<ContentEntity>(DEFAULT_CONTENT_ENTITY);
 
   @observable @persist
-  dateCreated: Date;
+  emotion: EmotionType = EmotionType.NEUTRAL;
 
   @observable @persist
-  dateUpdated?: Date;
+  dateCreated?: string;
 
   @observable @persist
-  lastSync?: Date;
+  dateUpdated?: string;
 
-  constructor(data: Emotion) {
-    this.emotion = data.emotion;
-    this.dateCreated = data.dateCreated;
-    this.lastSync = data.lastSync;
-    this.dateUpdated = data.dateUpdated;
+  @observable @persist
+  lastSync?: string;
 
+  constructor() {
     makeObservable(this);
   }
 }

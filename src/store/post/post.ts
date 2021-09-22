@@ -1,52 +1,54 @@
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
-import { Profile } from "../profile";
-import { PostStatus } from "../../type/post";
+import {
+  ContentSegment,
+  DEFAULT_POST_SETTINGS,
+  PostSettings,
+  PostStatus
+} from "../../type/post";
+import { DEFAULT_ENGAGEMENT_STATS, EngagementStats } from "../../type/engagement";
 
 export class Post {
   @observable @persist
-  postId: string;
-
-  @observable @persist('object', Profile)
-  author: Profile;
+  postId: string = "";
 
   @observable @persist
-  mediaUrl: string;
+  authorId: string = "";
 
   @observable @persist
-  description?: string;
+  mediaUrl: string = "";
 
-  @observable @persist('map')
-  links: {
-    tags: string[],
-    mentions: Profile[],
-    places: string[],
-    urls: string[],
-  };
+  @observable @persist('list')
+  readonly description = observable.array<ContentSegment>([]);
 
-  @observable @persist
-  status: PostStatus;
+  @observable @persist("object")
+  readonly settings = observable.object<PostSettings>(DEFAULT_POST_SETTINGS);
+
+  @observable @persist("object")
+  readonly engagement = observable.object<EngagementStats>(DEFAULT_ENGAGEMENT_STATS);
 
   @observable @persist
-  dateCreated: Date;
+  status: PostStatus = PostStatus.PENDING;
 
   @observable @persist
-  dateUpdated?: Date;
+  dateCreated?: string;
 
   @observable @persist
-  lastSync?: Date;
+  dateUpdated?: string;
 
-  constructor(data: Post) {
-    this.postId = data.postId;
-    this.author = data.author;
-    this.mediaUrl = data.mediaUrl;
-    this.links = data.links;
-    this.description = data.description;
-    this.dateCreated = data.dateCreated;
-    this.status = data.status;
-    this.dateUpdated = data.dateUpdated;
-    this.lastSync = data.lastSync;
+  @observable @persist
+  lastSync?: string;
 
+  constructor() {
     makeObservable(this);
   }
+
+  @computed
+  getEmotionStats = () => this.engagement.emotions;
+
+  @computed
+  getCommentsCount = () => this.engagement.comments;
+
+  @computed
+  acceptsComments = () => this.status === PostStatus.PUBLISHED && this.settings.commentsAllowed;
 }

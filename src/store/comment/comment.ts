@@ -1,45 +1,47 @@
 import { makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { CommentStatus } from "../../type/comment";
+import { DEFAULT_ENGAGEMENT_STATS, EngagementStats } from "../../type/engagement";
+import { ContentSegment } from "../../type/common";
 
 export class Comment {
   @observable @persist
-  commentId: string;
+  commentId: string = '';
 
   @observable @persist
-  profileId: string;
+  authorId: string = '';
 
   @observable @persist
-  postId?: string;
+  postId: string = '';
 
   @observable @persist
   parentCommentId?: string;
 
   @observable @persist
-  commentText: string;
+  isPinned: boolean = false;
+
+  @observable @persist('list')
+  readonly commentText = observable.array<ContentSegment>([]);
 
   @observable @persist
-  dateCreated: Date;
+  dateCreated?: string;
 
   @observable @persist
-  dateUpdated?: Date;
+  dateUpdated?: string;
 
   @observable @persist
   status?: CommentStatus;
 
+  @observable @persist("object")
+  readonly engagement = observable.object<EngagementStats>(DEFAULT_ENGAGEMENT_STATS);
+
+  @observable @persist('list')
+  readonly replies = observable.array<string>([]);
+
   @observable @persist
-  lastSync?: Date;
+  lastSync?: string;
 
-  constructor(data: Comment) {
-    this.commentId = data.commentId;
-    this.profileId = data.profileId;
-    this.postId = data.postId;
-    this.parentCommentId = data.parentCommentId;
-    this.dateCreated = data.dateCreated;
-    this.status = data.status ?? CommentStatus.UNKNOWN;
-    this.lastSync = data.lastSync;
-    this.commentText = data.commentText;
-
+  constructor() {
     makeObservable(this);
   }
 }

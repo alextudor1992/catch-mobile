@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { action } from "mobx";
+import { action, computed } from "mobx";
 import { create } from "mobx-persist";
 import { Profile, ProfileStore } from "./profile";
 import { NavigationStore } from "./navigation";
@@ -11,16 +11,17 @@ import { CommentStore } from "./comment";
 
 export class Store {
   accountStore: AccountStore = new AccountStore();
-  profileStore: ProfileStore = new ProfileStore();
   navigationStore: NavigationStore = new NavigationStore();
 
   postStore: PostStore;
+  profileStore: ProfileStore;
   emotionStore: EmotionStore;
   commentStore: CommentStore;
 
   storesHydrated: boolean = false;
 
   constructor() {
+    this.profileStore = new ProfileStore(this);
     this.postStore = new PostStore(this);
     this.emotionStore = new EmotionStore(this);
     this.commentStore = new CommentStore(this);
@@ -32,8 +33,13 @@ export class Store {
 
   @action
   setActiveProfile = async (profile: Profile) => {
-    this.accountStore.activeProfile = profile.handle;
+    this.profileStore.activeProfile = profile.profileId;
     await this.hydrateStores();
+  }
+
+  @computed
+  getActiveProfile = async () => {
+    return await this.profileStore.getProfile(this.profileStore.activeProfile) as Profile;
   }
 
   protected hydrateStores = async () => {
@@ -41,7 +47,7 @@ export class Store {
     this.accountStore = await this.hydrate('account', this.accountStore);
     this.profileStore = await this.hydrate('profiles', this.profileStore);
 
-    const { activeProfile } = this.accountStore;
+    const { activeProfile } = this.profileStore;
 
     this.postStore = await this.hydrate(`${activeProfile}:posts`, this.postStore);
     this.emotionStore = await this.hydrate(`${activeProfile}:emotions`, this.emotionStore);

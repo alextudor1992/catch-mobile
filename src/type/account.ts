@@ -4,3 +4,8 @@ export enum IdentityStatus {
   PENDING = 'PENDING',
   VERIFIED = 'VERIFIED',
 }
+
+export enum AccountType {
+  PERSONAL = 'personal',
+  PROFESSIONAL = 'professional',
+}
