@@ -1,20 +1,20 @@
 import { action, computed, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { Comment } from "./comment";
-import { Post } from "../post";
+import { Post, PostStatus } from "../post";
 import { v4 as uuid } from "uuid";
 import { Store } from "../store";
-import { PostStatus } from "../../type/post";
 import { formatDate } from "../../utils/date";
+import { INITIAL_SCORE_UNVERIFIED_ACCOUNT, StoreInterface } from "../common";
 
-export class CommentStore {
+export class CommentStore implements StoreInterface {
   @observable @persist('list', Comment)
   readonly comments = observable.array<Comment>([]);
 
   constructor(protected store: Store) {}
 
   createComment = (post: Post, parentComment?: Comment) => {
-    if (this.store.profileStore.getCurrentProfile()?.isGuest) {
+    if (this.store.profileStore.getCurrentProfile()?.isGhost) {
       throw new Error('Guest profile cannot publish comments');
     }
     if (post.status !== PostStatus.PUBLISHED) {
@@ -29,12 +29,16 @@ export class CommentStore {
     comment.authorId = this.store.profileStore.activeProfile;
     comment.postId = post.postId;
     comment.parentCommentId = parentComment?.parentCommentId;
+
+    if (!this.store.accountStore.isVerified) {
+      comment.score.globalScore = INITIAL_SCORE_UNVERIFIED_ACCOUNT;
+    }
     return comment;
   }
 
   @action
   publishComment = (comment: Comment) => {
-    comment.dateCreated = formatDate();
+    comment.timestamps.created = formatDate();
 
     if (this.canPublish(comment)) {
       if (comment.parentCommentId) {
@@ -48,7 +52,7 @@ export class CommentStore {
   @action
   updateComment = (comment: Comment) => {
     if (this.canPublish(comment)) {
-      comment.dateUpdated = formatDate();
+      comment.timestamps.updated = formatDate();
     }
   }
 
@@ -79,7 +83,7 @@ export class CommentStore {
   }
 
   @action
-  destroyReferences = (entity: Post | Comment) => {
+  destroyReferences = entity => {
     const entityId = this.getEntityId(entity);
 
     if (entity instanceof Post) {
@@ -117,5 +121,10 @@ export class CommentStore {
       return entity.commentId;
     }
     throw new Error('Entity must be an instance of Post or Comment');
+  }
+
+  @action
+  clearStore = () => {
+    this.comments.clear();
   }
 }

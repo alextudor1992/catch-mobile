@@ -3,8 +3,9 @@ import { persist } from "mobx-persist";
 import { Post } from "./post";
 import { Store } from "../../store";
 import { formatDate } from "../../utils/date";
+import { StoreInterface } from "../common/types";
 
-export class PostStore {
+export class PostStore implements StoreInterface {
   @observable @persist('list', Post)
   readonly posts = observable.array<Post>([]);
 
@@ -15,10 +16,11 @@ export class PostStore {
   createPost = () => {
     const post = new Post();
     post.authorId = this.store.profileStore.activeProfile;
+    return post;
   }
 
   @action
-  setPost = (post: Post) => {
+  publishPost = (post: Post) => {
     if (this.canPublish(post)) {
       post.dateCreated = formatDate();
       this.posts.push(post);
@@ -58,5 +60,9 @@ export class PostStore {
     this.posts.remove(this.getPost(postId) as Post);
     this.store.commentStore.destroyReferences(postId);
     this.store.emotionStore.destroyReferences(postId);
+  }
+
+  clearStore = () => {
+    this.posts.clear();
   }
 }

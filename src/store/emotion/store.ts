@@ -2,15 +2,16 @@ import { action, computed, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { v4 as uuid } from 'uuid';
 import { Emotion } from "./emotion";
-import { EmotionType } from "../../type/engagement";
+import { EmotionType } from "./types";
 import { Post } from "../post";
 import { Store } from "../store";
-import { EntityType } from "../../type/entity";
+import { EntityType } from "../common";
 import { Comment } from "../comment";
 import { formatDate } from "../../utils/date";
 import { Profile } from "../profile";
+import { StoreInterface } from "../common";
 
-export class EmotionStore {
+export class EmotionStore implements StoreInterface {
   @observable @persist('map', Emotion)
   readonly emotions = observable.map<string, Emotion>({});
 
@@ -18,9 +19,6 @@ export class EmotionStore {
 
   @action
   createEmotion = (entity: Post | Comment | Profile, emotion: EmotionType) => {
-    if (this.store.profileStore.getCurrentProfile()?.isGuest) {
-      throw new Error('Guest profile cannot react to content');
-    }
     if (this.store.profileStore.belongsToCurrentAccount(this.getEntityId(entity))) {
       throw new Error('A profile cannot react to their own content');
     }
@@ -30,9 +28,9 @@ export class EmotionStore {
     contentEmotion.emotion = emotion;
 
     if (this.emotions.has(this.getEntityId(entity))) {
-      contentEmotion.dateUpdated = formatDate();
+      contentEmotion.timestamps.updated = formatDate();
     }
-    else contentEmotion.dateCreated = formatDate();
+    else contentEmotion.timestamps.created = formatDate();
 
     if (entity instanceof Post) {
       contentEmotion.entity.id = entity.postId;
@@ -47,6 +45,10 @@ export class EmotionStore {
       contentEmotion.entity.type = EntityType.PROFILE;
     }
     this.emotions.set(contentEmotion.entity.id, contentEmotion);
+
+    if (!this.store.profileStore.getCurrentProfile()?.isGhost) {
+      // TODO: API Call to push the reaction to the backend, only if the profile is non-ghost.
+    }
   }
 
   @action
@@ -69,5 +71,9 @@ export class EmotionStore {
       return entity.profileId;
     }
     throw new Error('Entity is not an instance of Post or Comment');
+  }
+
+  clearStore = () => {
+    this.emotions.clear();
   }
 }

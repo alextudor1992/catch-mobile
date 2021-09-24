@@ -1,12 +1,20 @@
 import { computed, makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
 import {
-  ContentSegment,
   DEFAULT_POST_SETTINGS,
   PostSettings,
   PostStatus
-} from "../../type/post";
-import { DEFAULT_ENGAGEMENT_STATS, EngagementStats } from "../../type/engagement";
+} from "./types";
+import { DEFAULT_ENGAGEMENT_STATS, EngagementStats } from "../emotion/types";
+import {
+  ContentSegment,
+  DEFAULT_MEDIA_INFO,
+  DEFAULT_SCORE,
+  DEFAULT_SYNC_INFO, DEFAULT_TIMESTAMPS_INFO,
+  MediaInfo,
+  Score,
+  SyncInfo, TimestampsInfo
+} from "../common";
 
 export class Post {
   @observable @persist
@@ -16,7 +24,7 @@ export class Post {
   authorId: string = "";
 
   @observable @persist
-  mediaUrl: string = "";
+  readonly mediaUrl = observable.object<MediaInfo>(DEFAULT_MEDIA_INFO);
 
   @observable @persist('list')
   readonly description = observable.array<ContentSegment>([]);
@@ -36,8 +44,14 @@ export class Post {
   @observable @persist
   dateUpdated?: string;
 
-  @observable @persist
-  lastSync?: string;
+  @observable @persist('object')
+  readonly score = observable.object<Score>(DEFAULT_SCORE);
+
+  @observable @persist('object')
+  readonly syncInfo = observable.object<SyncInfo>(DEFAULT_SYNC_INFO);
+
+  @observable @persist('object')
+  readonly timestamps = observable.object<TimestampsInfo>(DEFAULT_TIMESTAMPS_INFO);
 
   constructor() {
     makeObservable(this);

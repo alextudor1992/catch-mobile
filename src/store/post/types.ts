@@ -1,4 +1,3 @@
-import { EmotionType } from "./engagement";
 
 export enum PostStatus {
   PENDING = 'PENDING',
