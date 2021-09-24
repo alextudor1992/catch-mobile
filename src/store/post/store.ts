@@ -3,7 +3,7 @@ import { persist } from "mobx-persist";
 import { Post } from "./post";
 import { Store } from "../../store";
 import { formatDate } from "../../utils/date";
-import { StoreInterface } from "../common/types";
+import { StoreInterface } from "../common";
 
 export class PostStore implements StoreInterface {
   @observable @persist('list', Post)
@@ -13,7 +13,7 @@ export class PostStore implements StoreInterface {
     makeObservable(this);
   }
 
-  createPost = () => {
+  readonly createPost = () => {
     const post = new Post();
     post.authorId = this.store.profileStore.activeProfile;
     return post;
@@ -43,9 +43,9 @@ export class PostStore implements StoreInterface {
   canPublish = (post: Post) => !!post.description.length;
 
   @computed
-  getPost = (postId: string) => this.posts.find((post) => post.postId === postId);
+  readonly getPost = (postId: string) => this.posts.find((post) => post.postId === postId);
 
-  getPostsIterator = (authorId: string) => {
+  readonly getPostsIterator = (authorId: string) => {
     const posts = this.posts;
     return (function* () {
       for (let post of posts) {
@@ -56,6 +56,7 @@ export class PostStore implements StoreInterface {
     })();
   }
 
+  @action
   destroyReferences = (postId) => {
     this.posts.remove(this.getPost(postId) as Post);
     this.store.commentStore.destroyReferences(postId);

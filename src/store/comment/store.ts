@@ -13,7 +13,7 @@ export class CommentStore implements StoreInterface {
 
   constructor(protected store: Store) {}
 
-  createComment = (post: Post, parentComment?: Comment) => {
+  readonly createComment = (post: Post, parentComment?: Comment) => {
     if (this.store.profileStore.getCurrentProfile()?.isGhost) {
       throw new Error('Guest profile cannot publish comments');
     }
@@ -37,7 +37,7 @@ export class CommentStore implements StoreInterface {
   }
 
   @action
-  publishComment = (comment: Comment) => {
+  readonly publishComment = (comment: Comment) => {
     comment.timestamps.created = formatDate();
 
     if (this.canPublish(comment)) {
@@ -56,10 +56,10 @@ export class CommentStore implements StoreInterface {
     }
   }
 
-  canPublish = (comment: Comment) => comment.commentText.length;
+  readonly canPublish = (comment: Comment) => comment.commentText.length;
 
   @action
-  removeComment = (comment: Comment) => {
+  readonly removeComment = (comment: Comment) => {
     const { activeProfile } = this.store.profileStore;
     if (comment.authorId === activeProfile || this.store.postStore.getPost(comment.postId)?.authorId === activeProfile) {
       this.comments.remove(comment);
@@ -69,7 +69,7 @@ export class CommentStore implements StoreInterface {
   }
 
   @computed
-  hasReplies = (comment: Comment) => comment.engagement.comments;
+  readonly hasReplies = (comment: Comment) => comment.engagement.comments;
 
   protected updateEntityCommentsStats = (entity: Post | Comment) => {
     if (entity instanceof Post) {
@@ -83,7 +83,7 @@ export class CommentStore implements StoreInterface {
   }
 
   @action
-  destroyReferences = entity => {
+  readonly destroyReferences = entity => {
     const entityId = this.getEntityId(entity);
 
     if (entity instanceof Post) {
@@ -111,7 +111,7 @@ export class CommentStore implements StoreInterface {
   }
 
   @computed
-  getComment = (commentId: string) => this.comments.find(({ commentId: targetCommentId }) => targetCommentId === commentId);
+  readonly getComment = (commentId: string) => this.comments.find(({ commentId: targetCommentId }) => targetCommentId === commentId);
 
   @computed
   protected getEntityId = (entity: Post | Comment) => {
@@ -124,7 +124,12 @@ export class CommentStore implements StoreInterface {
   }
 
   @action
-  clearStore = () => {
+  readonly clearStore = () => {
     this.comments.clear();
+  }
+
+  @action
+  readonly pinComment = (comment: Comment) => {
+    comment.isPinned = true;
   }
 }

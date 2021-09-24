@@ -1,7 +1,7 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { persist } from "mobx-persist";
 import { AccountType, IdentityStatus } from "./types";
-import { StoreInterface } from "../common/types";
+import { StoreInterface } from "../common";
 
 export class AccountStore implements StoreInterface {
   @observable @persist
@@ -17,7 +17,7 @@ export class AccountStore implements StoreInterface {
   readonly profiles = observable.array<string>([]);
 
   @observable @persist('map')
-  readonly preferences = observable.map<{[key: string]: any}>({});
+  readonly preferences = observable.map({});
 
   constructor() {
     makeObservable(this);
@@ -34,7 +34,7 @@ export class AccountStore implements StoreInterface {
   }
 
   @action
-  clearStore = () => {
+  readonly clearStore = () => {
     this.accountId = '';
     this.status = IdentityStatus.NOT_VERIFIED;
     this.type = AccountType.PERSONAL;

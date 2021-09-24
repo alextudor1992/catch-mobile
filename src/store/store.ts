@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from "mobx-persist";
 import { ProfileStore } from "./profile";
 import { NavigationStore } from "./navigation";
@@ -7,6 +6,7 @@ import { PostStore } from "./post";
 import { AccountStore } from "./account";
 import { EmotionStore } from "./emotion";
 import { CommentStore } from "./comment";
+import { SecureStorage } from "../utils/storage";
 
 export class Store {
   accountStore = new AccountStore();
@@ -30,9 +30,9 @@ export class Store {
     });
   }
 
-  isAccountDataLoaded = () => this.storesHydrated;
+  readonly isAccountDataLoaded = () => this.storesHydrated;
 
-  public refreshStores = async () => {
+  readonly refreshStores = async () => {
     if (this.storesHydrated) {
       this.profileStore = new ProfileStore(this);
       this.postStore = new PostStore(this);
@@ -55,13 +55,13 @@ export class Store {
     }
   }
 
-  protected hydrate = create({
-    storage: AsyncStorage,
+  protected readonly hydrate = create({
+    storage: new SecureStorage(),
     jsonify: true,
-    debounce: 100,
+    debounce: 250,
   })
 
-  destroyLocalAccountData = () => {
+  readonly destroyLocalAccountData = () => {
     this.profileStore.profiles.clear();
   }
 

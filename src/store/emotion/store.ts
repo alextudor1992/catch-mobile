@@ -73,6 +73,7 @@ export class EmotionStore implements StoreInterface {
     throw new Error('Entity is not an instance of Post or Comment');
   }
 
+  @action
   clearStore = () => {
     this.emotions.clear();
   }

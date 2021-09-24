@@ -1,6 +1,6 @@
 
 export enum EntityType {
-  UNKNOWN,
+  UNKNOWN = 'unknown',
   PROFILE = 'profile',
   POST = 'post',
   COMMENT = 'comment',

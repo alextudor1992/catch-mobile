@@ -10,7 +10,7 @@ import {
   Score,
   SyncInfo,
   TimestampsInfo
-} from "../common/types";
+} from "../common";
 
 export class Comment {
   @observable @persist
