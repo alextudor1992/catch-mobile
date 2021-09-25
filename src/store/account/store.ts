@@ -13,6 +13,12 @@ export class AccountStore implements StoreInterface {
   @observable @persist
   type: AccountType = AccountType.PERSONAL;
 
+  @observable @persist
+  phoneNumber: string = '';
+
+  @observable @persist
+  email: string = '';
+
   @observable @persist('list')
   readonly profiles = observable.array<string>([]);
 
@@ -36,6 +42,8 @@ export class AccountStore implements StoreInterface {
   @action
   readonly clearStore = () => {
     this.accountId = '';
+    this.email = '';
+    this.phoneNumber = '';
     this.status = IdentityStatus.NOT_VERIFIED;
     this.type = AccountType.PERSONAL;
     this.profiles.clear();
